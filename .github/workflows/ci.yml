@@ -29,7 +29,7 @@ jobs:                          # --> A workflow can contain multiple jobs (compo
 
       - name: Upload test results as artifacts  # --> Optional: store test results (component: artifact)
         if: success()                # --> Only runs if tests pass
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ./                  # --> You can adjust this path to point to your test logs or reports
