@@ -1,0 +1,35 @@
+name: Flask App CI        # --> Optional name of the workflow (component: workflow)
+
+on:                            # --> 'on' defines the event that triggers the workflow (component: event)
+  push:                        # --> Workflow runs when code is pushed
+    branches: [ main ]         # --> Only when pushed to 'main' branch
+  pull_request:                # --> Also runs when a PR is opened
+    branches: [ main ]         # --> For PRs targeting 'main' branch
+jobs:                          # --> A workflow can contain multiple jobs (component: job)
+  build-and-test:              # --> This is the name of the job
+    runs-on: ubuntu-latest     # --> The job runs on a GitHub-hosted runner (component: runner)
+
+    steps:                     # --> Each job consists of multiple steps (component: step)
+      - name: Checkout code    # --> Step 1: Fetch code from repo
+        uses: actions/checkout@v3  # --> Reusable GitHub Action to clone your repo
+
+      - name: Set up Python    # --> Step 2: Set up the programming environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'   # --> You can change the version if needed
+
+      - name: Install dependencies  # --> Step 3: Install Flask and pytest from requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests            # --> Step 4: Run your tests (CI part)
+        run: |
+          pytest
+
+      - name: Upload test results as artifacts  # --> Optional: store test results (component: artifact)
+        if: success()                # --> Only runs if tests pass
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./                  # --> You can adjust this path to point to your test logs or reports
